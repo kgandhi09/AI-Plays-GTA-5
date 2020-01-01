@@ -75,6 +75,26 @@ y_pred = classifier.predict(X_test)
 #converting predicted result from percent to boolean
 y_pred = y_pred > 0.5
 
+
+#Predict if the customer with the following informations will leave the bank or not:
+"""
+Geography - France
+Credit Score - 600
+Gender - Male
+Age - 40
+Tenure - 3
+Bank Balance - 60000
+Number of Products - 2
+Has Credit Card - Yes
+Is Active Member - Yes
+Estimated Salary - 50000
+"""
+
+new_prediction = classifier.predict(sc.transform(np.array([[0.0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])))
+
+new_prodiction = new_prediction > 0.5
+    
+
 #Making the confusion matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(Y_test, y_pred)
