@@ -38,6 +38,7 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
+'''
 #------------------------------------------------------------------------------------------------------
 
 #Part 2 - Building Artificial Neural Network
@@ -45,7 +46,7 @@ X_test = sc.transform(X_test)
 #Importing the keras libraries and packages
 import keras
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Dropout
 
 #Initialising the ANN
 classifier = Sequential()
@@ -53,9 +54,11 @@ classifier = Sequential()
 #Adding the first input layer and first hidden layer
 # To decide the number of nodes in the hidden layer - take the average of number of nodes in input an output layer
 classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu', input_dim = 11))
+classifier.add(Dropout(rate = 0.1))
 
 #Adding the second hidden layer
 classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu'))
+classifier.add(Dropout(rate = 0.1))
 
 #Adding the final output layer
 classifier.add(Dense(output_dim = 1, init = 'uniform', activation = 'sigmoid'))
@@ -99,11 +102,65 @@ new_prodiction = new_prediction > 0.5
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(Y_test, y_pred)
 
+#-------------------------------------------------------------------------------------------------
 
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
 
+#Part 4 - Evaluating, Improving and Tuning the ANN
 
+#Evaluating the ANN
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import cross_val_score
 
+def build_classifier():
+    classifier = Sequential()
+    classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu', input_dim = 11))
+    classifier.add(Dropout(1))
+    classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu'))
+    classifier.add(Dropout(1))
+    classifier.add(Dense(output_dim = 1, init = 'uniform', activation = 'sigmoid'))
+    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+    return classifier
+ 
+classifier = KerasClassifier(build_fn = build_classifier, batch_size = 10, nb_epoch = 100)
+accuracies = cross_val_score(estimator = classifier, X = X_train, y = Y_train, cv = 10, n_jobs = -1)
+mean = accuracies.mean()
+variance = accuracies.std()
+'''
 
+#Improving the ANN
+#Dropout Regularization to reduce overfitting if needed
 
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
 
+#Part 4 - Evaluating, Improving and Tuning the ANN
 
+#Evaluating the ANN
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import GridSearchCV
+
+def build_classifier(optimizer):
+    classifier = Sequential()
+    classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu', input_dim = 11))
+    classifier.add(Dropout(1))
+    classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu'))
+    classifier.add(Dropout(1))
+    classifier.add(Dense(output_dim = 1, init = 'uniform', activation = 'sigmoid'))
+    classifier.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
+    return classifier
+ 
+classifier = KerasClassifier(build_fn = build_classifier)
+#accuracies = cross_val_score(estimator = classifier, X = X_train, y = Y_train, cv = 10, n_jobs = -1)
+#mean = accuracies.mean()
+#variance = accuracies.std()
+
+parameters = {'batch_size' : [25,32],'nb_epoch' : [100, 500], 'optimizer' : ['adam', 'rmsprop']}
+
+grid_search = GridSearchCV(estimator = classifier, param_grid = parameters, scoring = 'accuracy', cv = 10)
+grid_search = grid_search.fit(X_train, Y_train)
+best_parameters = grid_search.best_params_
+best_accuracy = grid_search.best_score_ 
