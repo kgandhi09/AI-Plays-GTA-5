@@ -42,12 +42,12 @@ train_datagen = ImageDataGenerator(
 
 test_datagen = ImageDataGenerator(rescale=1./255)
 
-training_set = train_datagen.flow_from_directory('/home/kgandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification/cnn_dataset/training_set',
+training_set = train_datagen.flow_from_directory('/home/gandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification/cnn_dataset/training_set',
                                                  target_size=(64, 64),
                                                  batch_size=32,
                                                  class_mode='binary')
 
-test_set = test_datagen.flow_from_directory('/home/kgandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification/cnn_dataset/test_set',
+test_set = test_datagen.flow_from_directory('/home/gandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification/cnn_dataset/test_set',
                                              target_size=(64, 64),
                                              batch_size=32,
                                              class_mode='binary')
@@ -58,8 +58,11 @@ classifier.fit_generator(training_set,
                     validation_data=test_set,
                     validation_steps=2000)
 
+#Saving the CNN model
+classifier.save('/home/gandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification')
+
 #Part 3: Making a single prediction
-test_image = image.load_img('/home/kgandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification/cnn_dataset/single_prediction/cat_or_dog_1.jpg', target_size=(64,64))
+test_image = image.load_img('/home/gandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification/cnn_dataset/single_prediction/cat_or_dog_1.jpg', target_size=(64,64))
 test_image = image.img_to_array(test_image)
 test_image = np.expand_dims(test_image, axis = 0)
 result = classifier.predict(test_image)
@@ -69,4 +72,4 @@ if result[0][0] == 1:
 else:
         prediction = 'Cat'
         
-print prediction
+print(prediction)
