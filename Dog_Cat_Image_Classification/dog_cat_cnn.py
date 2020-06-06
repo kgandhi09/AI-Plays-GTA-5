@@ -59,7 +59,7 @@ classifier.fit_generator(training_set,
                     validation_steps=2000)
 
 #Saving the CNN model
-classifier.save('/home/gandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification')
+classifier.save('dog_cat_cnn_model.h5')
 
 #Part 3: Making a single prediction
 test_image = image.load_img('/home/gandhi/Desktop/Deep_Learning/Dog_Cat_Image_Classification/cnn_dataset/single_prediction/cat_or_dog_1.jpg', target_size=(64,64))
