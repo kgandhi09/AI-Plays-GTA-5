@@ -3,7 +3,12 @@ from win32 import win32gui
 import cv2
 import numpy as np
 import time
+from numpy import ones,vstack
+from numpy.linalg import lstsq
+import matplotlib.pyplot as plt
+from statistics import mean
 from directkeys import PressKey, ReleaseKey, W, A, S, D
+from lane_detection import draw_lanes
 
 def region_of_interest(img, vertices):
     mask = np.zeros_like(img)
@@ -12,10 +17,18 @@ def region_of_interest(img, vertices):
     return masked
 
 def process_image(orig_image):
+    #converting the original image to grayscale
     processed_img = cv2.cvtColor(orig_image, cv2.COLOR_BGR2GRAY)
-    processed_img = cv2.Canny(processed_img, threshold1=200, threshold2=300)
-    vertices = np.array([[0,600], [320,330], [960,330], [1280,600], [1280,1000], [680,500], [600,500], [0,1000]])
+    #Finding the edges using canny edge detector
+    processed_img = cv2.Canny(orig_image, threshold1=200, threshold2=300)
+    # Blurring/Smoothening the image to reduce the noise
+    processed_img = cv2.GaussianBlur(processed_img, (5, 5), 0)
+    #Adding a mask
+    vertices = np.array([[0,450], [320,350], [960,350], [1280,450], [1280,1000], [0,1000]])
     processed_img = region_of_interest(processed_img, [vertices])
+    #Finding line edges
+    lines = cv2.HoughLinesP(processed_img, 1, np.pi/180, 180, np.array([]), 10, 10)
+
     return processed_img
 
 def run():
