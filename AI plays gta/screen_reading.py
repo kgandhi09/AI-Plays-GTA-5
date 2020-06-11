@@ -37,7 +37,6 @@ def run():
         screen = process_image(window_read)
         cv2.imshow('window', screen)
 
-
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
