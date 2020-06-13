@@ -20,7 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5aa72a6-b38d-4c03-82ed-f20a5dc40519" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" beforeDir="false" afterPath="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,9 +49,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="D:\Python\Python37\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Image Segmentation" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" />
@@ -88,10 +89,10 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592053750628">
+    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592053873502">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592053750628" />
+    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592053873502" />
     <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1592053749465">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
