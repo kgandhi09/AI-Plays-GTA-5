@@ -63,3 +63,13 @@ outputs = tf.keras.layers.Conv2D(1, (1,1), activation='sigmoid')(c9)
 model = tf.keras.Model(inputs=[inputs], outputs=[outputs])
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 model.summary()
+
+#-----------------------------------------------------------------------------------------------------------------------
+#Model CheckPoint
+checkpointer = tf.keras.callbacks.ModelCheckpoint('model_for_gta.h5', verbose=1, save_best_only=True)
+callbacks = [
+            tf.keras.callbacks.EarlyStopping(patience=2, monitor='val_loss'),
+            tf.keras.callbacks.TensorBoard(log_dir='logs')]
+
+results = model.fit(X, Y, validation_split=0.1, batch_size=16, epochs=25, callbacks=callbacks)
+

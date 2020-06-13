@@ -20,7 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5aa72a6-b38d-4c03-82ed-f20a5dc40519" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" beforeDir="false" afterPath="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" beforeDir="false" afterPath="$PROJECT_DIR$/Image Segmentation/unet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +42,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" />
   </component>
   <component name="RunManager">
-    <configuration name="unet_nuclei" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="unet" type="PythonConfigurationType" factoryName="Python">
       <module name="Deep_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -53,7 +54,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Image Segmentation/unet_nuclei.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Image Segmentation/unet.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -88,29 +89,29 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592053873502">
+    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592056532241">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592053873502" />
+    <state x="2334" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592056532241" />
     <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1592053749465">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2660" y="275" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592053749465" />
-    <state width="1899" height="282" key="GridCell.Tab.0.bottom" timestamp="1592055576496">
+    <state width="1899" height="229" key="GridCell.Tab.0.bottom" timestamp="1592055792604">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055576496" />
-    <state width="1899" height="282" key="GridCell.Tab.0.center" timestamp="1592055576495">
+    <state width="1899" height="229" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055792604" />
+    <state width="1899" height="229" key="GridCell.Tab.0.center" timestamp="1592055792604">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055576495" />
-    <state width="1899" height="282" key="GridCell.Tab.0.left" timestamp="1592055576494">
+    <state width="1899" height="229" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055792604" />
+    <state width="1899" height="229" key="GridCell.Tab.0.left" timestamp="1592055792604">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055576494" />
-    <state width="1899" height="282" key="GridCell.Tab.0.right" timestamp="1592055576495">
+    <state width="1899" height="229" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055792604" />
+    <state width="1899" height="229" key="GridCell.Tab.0.right" timestamp="1592055792604">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055576495" />
+    <state width="1899" height="229" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1592055792604" />
   </component>
 </project>
