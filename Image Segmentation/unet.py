@@ -1,12 +1,19 @@
 import tensorflow as tf
+import os
+import numpy as np
+
+TRAIN_PATH = 'D:\Deep_Learning\AI plays gta\lane dataset\train'
+TEST_PATH = 'D:\Deep_Learning\AI plays gta\lane dataset\test'
 
 IMG_WIDTH = 128
 IMG_HEIGHT = 128
 IMG_CHANNELS = 3
 
+
 #Building the model
 inputs = tf.keras.layers.Input((IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS))
 s = tf.keras.layers.Lambda(lambda x: x/255)(inputs)
+
 
 #Contraction path
 c1 = tf.keras.layers.Conv2D(16, (3,3), activation='relu', kernel_initializer='he_normal', padding='same')(s)
