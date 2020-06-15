@@ -5,6 +5,10 @@ from tqdm import tqdm
 from skimage.io import imread, imshow
 from skimage.transform import resize
 import matplotlib.pyplot as plt
+import random
+
+seed = 42
+np.random.seed = seed
 
 TRAIN_PATH = 'stage1_train/'
 TEST_PATH = 'stage1_test/'
@@ -36,7 +40,7 @@ for n,id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
 print('resizing train images done!')
 
 # Test Images
-X_test = np.zeros((len(train_ids), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
+X_test = np.zeros((len(test_ids), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
 sizes_test = []
 print('Resizing test images')
 for n, id_ in tqdm(enumerate(test_ids), total=len(test_ids)):
@@ -119,3 +123,45 @@ results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=16, epoch
 model.save('model.h5')
 model.save_weights('model_weights.h5')
 # -----------------------------------------------------------------------------------------------------------------------
+
+#Predicting
+idx = random.randint(0, len(X_train))
+
+preds_train = model.predict(X_train[:int(X_train.shape[0]*0.9)], verbose=1)
+preds_val = model.predict(X_train[int(X_train.shape[0]*0.9):], verbose=1)
+preds_test = model.predict(X_test, verbose=1)
+
+ 
+preds_train_t = (preds_train > 0.5).astype(np.uint8)
+preds_val_t = (preds_val > 0.5).astype(np.uint8)
+preds_test_t = (preds_test > 0.5).astype(np.uint8)
+
+
+# Perform a sanity check on some random training samples
+ix = random.randint(0, len(preds_train_t))
+imshow(X_train[ix])
+# plt.show()
+imshow(np.squeeze(Y_train[ix]))
+# plt.show()
+imshow(np.squeeze(preds_train_t[ix]))
+# plt.show()
+
+# Perform a sanity check on some random validation samples
+ix = random.randint(0, len(preds_val_t))
+imshow(X_train[int(X_train.shape[0]*0.9):][ix])
+# plt.show()
+imshow(np.squeeze(Y_train[int(Y_train.shape[0]*0.9):][ix]))
+# plt.show()
+imshow(np.squeeze(preds_val_t[ix]))
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
