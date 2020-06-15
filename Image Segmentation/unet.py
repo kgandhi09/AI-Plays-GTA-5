@@ -123,7 +123,7 @@ results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=16, epoch
 model.save('model.h5')
 model.save_weights('model_weights.h5')
 # -----------------------------------------------------------------------------------------------------------------------
-
+'''
 #Predicting
 idx = random.randint(0, len(X_train))
 
@@ -154,10 +154,12 @@ imshow(np.squeeze(Y_train[int(Y_train.shape[0]*0.9):][ix]))
 # plt.show()
 imshow(np.squeeze(preds_val_t[ix]))
 plt.show()
+'''
 
-
-
-
+#Predicting
+preds_val = model.predict(X_train[int(X_train.shape[0]*0.9):], verbose=1)
+preds_val_t = (preds_val > 0.5).astype(np.uint8)
+imshow(np.squeeze(preds_val_t[-1]))
 
 
 

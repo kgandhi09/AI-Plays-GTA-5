@@ -62,9 +62,9 @@ print('Done!')
 
 image_x = random.randint(0, len(train_ids))
 imshow(X_train[image_x])
-plt.show()
+# plt.show()
 imshow(np.squeeze(Y_train[image_x]))
-plt.show()
+# plt.show()
 
 
 
@@ -161,7 +161,7 @@ imshow(X_train[ix])
 imshow(np.squeeze(Y_train[ix]))
 # plt.show()
 imshow(np.squeeze(preds_train_t[ix]))
-plt.show()
+# plt.show()
 
 # Perform a sanity check on some random validation samples
 ix = random.randint(0, len(preds_val_t))
@@ -170,6 +170,8 @@ imshow(X_train[int(X_train.shape[0]*0.9):][ix])
 imshow(np.squeeze(Y_train[int(Y_train.shape[0]*0.9):][ix]))
 # plt.show()
 imshow(np.squeeze(preds_val_t[ix]))
-plt.show()
+# plt.show()
+
+
 
 
