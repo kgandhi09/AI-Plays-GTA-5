@@ -34,6 +34,9 @@ for n,id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
     Y_train[n] = mask
 print('resizing train images done!')
 
+print(Y_train[0])
+
+
 # Building the model
 inputs = tf.keras.layers.Input((IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS))
 s = tf.keras.layers.Lambda(lambda x: x / 255)(inputs)
