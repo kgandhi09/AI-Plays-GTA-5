@@ -6,6 +6,7 @@ from skimage.io import imread, imshow
 from skimage.transform import resize
 import matplotlib.pyplot as plt
 import random
+from keras.preprocessing import image
 
 seed = 42
 np.random.seed = seed
@@ -157,9 +158,12 @@ plt.show()
 '''
 
 #Predicting
-preds_val = model.predict(X_train[int(X_train.shape[0]*0.9):], verbose=1)
-preds_val_t = (preds_val > 0.5).astype(np.uint8)
-imshow(np.squeeze(preds_val_t[-1]))
+img = X_test[5]
+imshow(np.squeeze(img))
+pred_test = model.predict(X_test, verbose=1)
+imshow(np.squeeze(pred_test[5]))
+
+print(pred_test[5])
 
 
 
