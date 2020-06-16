@@ -40,19 +40,6 @@ for n,id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
     Y_train[n] = mask
 print('resizing train images done!')
 
-# Test Images
-X_test = np.zeros((len(test_ids), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
-sizes_test = []
-print('Resizing test images')
-for n, id_ in tqdm(enumerate(test_ids), total=len(test_ids)):
-    path = TEST_PATH + id_
-    img = imread(path + '/images/' + id_ + '.png')[:,:,:IMG_CHANNELS]
-    sizes_test.append([img.shape[0], img.shape[1]])
-    img = resize(img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
-    X_test[n] = img
-print('Resizing test images done!')
-
-
 # Building the model
 inputs = tf.keras.layers.Input((IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS))
 s = tf.keras.layers.Lambda(lambda x: x / 255)(inputs)
@@ -123,51 +110,17 @@ callbacks = [
 results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=16, epochs=25, callbacks=callbacks)
 model.save('model.h5')
 model.save_weights('model_weights.h5')
+
 # -----------------------------------------------------------------------------------------------------------------------
-'''
-#Predicting
-idx = random.randint(0, len(X_train))
 
-preds_train = model.predict(X_train[:int(X_train.shape[0]*0.9)], verbose=1)
-preds_val = model.predict(X_train[int(X_train.shape[0]*0.9):], verbose=1)
-preds_test = model.predict(X_test, verbose=1)
-
- 
-preds_train_t = (preds_train > 0.5).astype(np.uint8)
-preds_val_t = (preds_val > 0.5).astype(np.uint8)
-preds_test_t = (preds_test > 0.5).astype(np.uint8)
-
-
-# Perform a sanity check on some random training samples
-ix = random.randint(0, len(preds_train_t))
-imshow(X_train[ix])
-# plt.show()
-imshow(np.squeeze(Y_train[ix]))
-# plt.show()
-imshow(np.squeeze(preds_train_t[ix]))
-# plt.show()
-
-# Perform a sanity check on some random validation samples
-ix = random.randint(0, len(preds_val_t))
-imshow(X_train[int(X_train.shape[0]*0.9):][ix])
-# plt.show()
-imshow(np.squeeze(Y_train[int(Y_train.shape[0]*0.9):][ix]))
-# plt.show()
-imshow(np.squeeze(preds_val_t[ix]))
-plt.show()
-'''
-
-#Predicting
-img = X_test[5]
-imshow(np.squeeze(img))
-pred_test = model.predict(X_test, verbose=1)
-imshow(np.squeeze(pred_test[5]))
-
-print(pred_test[5])
-
-
-
-
+# Predicting
+X_test = np.zeros((len(test_ids), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
+img = imread('D:/Deep_Learning/Image Segmentation/stage1_test/0a849e0eb15faa8a6d7329c3dd66aabe9a294cccb52ed30a90c8ca99092ae732/images/0a849e0eb15faa8a6d7329c3dd66aabe9a294cccb52ed30a90c8ca99092ae732.png')
+img = resize(img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
+X_test[0] = img 
+imshow(np.squeeze(X_test[0])) # test image
+pred_val = model.predict(X_test, verbose=1)
+imshow(np.squeeze(pred_val[0])) # Predicted Segments
 
 
 
