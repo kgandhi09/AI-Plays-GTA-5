@@ -4,12 +4,6 @@ import numpy as np
 from tqdm import tqdm
 from skimage.io import imread, imshow
 from skimage.transform import resize
-import matplotlib.pyplot as plt
-import random
-from keras.preprocessing import image
-
-seed = 42
-np.random.seed = seed
 
 TRAIN_PATH = 'stage1_train/'
 TEST_PATH = 'stage1_test/'
