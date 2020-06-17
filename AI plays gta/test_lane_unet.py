@@ -20,12 +20,15 @@ Y_train = np.zeros((len(train_list), IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.bool)
 
 for n in tqdm(range(1,len(train_list))):
     img = imread("D:/Deep_Learning/AI plays gta/test_lane_dataset/train/lane_img_" + str(n) + ".jpg")
-    img = resize(img, (IMG_HEIGHT, IMG_WIDTH, 3))
+    img = resize(img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
     X_train[n] = img
     mask = imread("D:/Deep_Learning/AI plays gta/test_lane_dataset/masked/lane_masked_" + str(n) + ".jpg")
-    mask = resize(mask, (IMG_HEIGHT, IMG_WIDTH, 1))
+    mask = resize(mask, (IMG_HEIGHT, IMG_WIDTH, 1), mode='constant', preserve_range=True)
     Y_train[n] = mask
     
+imshow(np.squeeze(X_train[1]))    
+imshow(np.squeeze(Y_train[1]))
+
 # Building the model
 inputs = tf.keras.layers.Input((IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS))
 s = tf.keras.layers.Lambda(lambda x: x / 255)(inputs)
@@ -92,16 +95,19 @@ callbacks = [
     tf.keras.callbacks.EarlyStopping(patience=2, monitor='val_loss'),
     tf.keras.callbacks.TensorBoard(log_dir='logs')]
 
-results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=16, epochs=25, callbacks=callbacks)
+results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=80, epochs=1000)
+
 model.save('test_lane_model.h5')
 model.save_weights('test_lane_model_weights.h5')
 
 # Predicting
 X_test = np.zeros((len(test_list), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
-test_img = imread("D:/Deep_Learning/AI plays gta/test_lane_dataset/test/lane_img_95.jpg")
+test_img = imread("D:/Deep_Learning/AI plays gta/test_lane_dataset/test/lane_img_97.jpg")
 test_img = resize(test_img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
 X_test[0] = test_img
 
 imshow(np.squeeze(X_test[0]))
 pred_val = model.predict(X_test, verbose=1)
 imshow(np.squeeze(pred_val[0])) # Predicted Segments
+
+
