@@ -6,7 +6,7 @@ vertices_right = []
 mask_change_flag = False
 masking_done = False
 masked = []
-counter = 268                   # counter: index of image in train folder to start with 
+counter = 391                  # counter: index of image in train folder to start with 
 
 
 
