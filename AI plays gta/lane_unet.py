@@ -90,7 +90,7 @@ model.summary()
 results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=30, epochs=1000)
 model.save('gta_lane_model.h5')
 model.save_weights('gta_lane_model_weights.h5')
-
+0
 counter = 28563
 
 X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
