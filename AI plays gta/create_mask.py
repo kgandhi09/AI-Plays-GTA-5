@@ -6,9 +6,7 @@ vertices_right = []
 mask_change_flag = False
 masking_done = False
 masked = []
-counter = 391                  # counter: index of image in train folder to start with 
-
-
+counter = 448                  # counter: index of image in train folder to start with 
 
 def create_mask(event, x, y, flags, params):
  
