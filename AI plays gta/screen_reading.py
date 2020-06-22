@@ -1,4 +1,4 @@
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 import cv2
 import numpy as np
 from directkeys import PressKey, ReleaseKey, W, A, S, D
@@ -7,10 +7,13 @@ from skimage.io import imread, imshow
 from skimage.transform import resize
 
 
+
 def conv_pred_to_world(world_array, pred_array, world_height, world_width):
+    white_pixels = np.argwhere(pred_array == 1)
+    print(white_pixels.size)
+
     cv2.imshow('lane', pred_array)
-    
-    
+
 def run(model):
     WORLD_HEIGHT = 1280
     WORLD_WIDTH = 1000
