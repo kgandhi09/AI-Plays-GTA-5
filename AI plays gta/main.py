@@ -5,14 +5,28 @@ from directkeys import PressKey, ReleaseKey, W, A, S, D
 import tensorflow as tf
 from skimage.io import imread, imshow
 from skimage.transform import resize
+import matplotlib.pyplot as plt
 
-
-
-def conv_pred_to_world(world_array, pred_array, world_height, world_width):
-    white_pixels = np.argwhere(pred_array == 1)
-    print(white_pixels.size)
-
-    cv2.imshow('lane', pred_array)
+def conv_pred_to_world(world, pred, world_height, world_width):
+    cv2.imshow('pred', pred)
+    black_img = np.zeros(pred.shape, np.uint8)
+    #pred = (pred / 255).astype(np.uint8)
+    white_pixels = np.argwhere(pred == 1)
+    #print(white_pixels, len(white_pixels))
+    for pixel in range(len(white_pixels)):    
+            cv2.circle(black_img, (white_pixels[pixel][0],white_pixels[pixel][1]), 2, (255, 255, 255), 4)
+    cv2.imshow('world', black_img)
+    '''
+    try:
+        
+        for pixel in white_pixels:    
+            cv2.circle(black_img, (white_pixels[pixel][0],white_pixels[pixel][1]), 2, (255, 255, 255), 4)
+    except:
+        print('no white pixels found!')
+        pass
+     
+    cv2.imshow('new_world', black_img)
+    '''
 
 def run(model):
     WORLD_HEIGHT = 1280

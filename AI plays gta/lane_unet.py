@@ -22,7 +22,7 @@ for n in tqdm(range(1,len(train_list))):
     X_train[n] = img
     mask = imread("D:/Deep_Learning/AI plays gta/lane dataset/masked/lane_masked_" + str(n) + ".jpg")
     mask = resize(mask, (IMG_HEIGHT, IMG_WIDTH, 1), mode='constant', preserve_range=True)
-    Y_train[n] = mask
+    Y_train[n] = mask    
     
 imshow(np.squeeze(X_train[490]))
 imshow(np.squeeze(Y_train[490]))
