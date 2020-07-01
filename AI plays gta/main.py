@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 def conv_pred_to_world(world, pred, world_height, world_width):
     #cv2.imshow('pred', pred)
     black_img = np.zeros(world.shape, np.uint8)
-    white_pixels_pred = np.argwhere(pred >= np.mean(pred))
+    white_pixels_pred = np.argwhere(pred >= 0.05)
     # (x,y) of pred world are : (white_pixels_pred[pixel][1],white_pixels_pred[pixel][0])
     for pixel in range(len(white_pixels_pred)):
         x_world = (white_pixels_pred[pixel][1]*world_height)/128
         y_world = (white_pixels_pred[pixel][0]*world_width)/128
-        cv2.circle(black_img, (int(x_world),int(y_world)), 1, (255, 255, 255), 1)
-    cv2.imshow('world', black_img)
+        cv2.circle(world, (int(x_world),int(y_world)), 2, (0, 0, 255), 2)
+    cv2.imshow('world', world)
 
 def run(model):
     WORLD_HEIGHT = 1280
