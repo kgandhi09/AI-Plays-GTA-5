@@ -5,9 +5,15 @@ from directkeys import PressKey, ReleaseKey, W, A, S, D
 import tensorflow as tf
 from statistics import mean
 
+def select_point_lucas_kanade(event, x, y, flags, params):
+    global point, point_selected, old_points
+    if event == cv2.EVENT_LBUTTONDOWN:
+        point = (x,y)
+        point_selected = True
+        old_points = np.array([[x,y]], dtype=np.float32)
+
 def conv_pred_to_world(world, pred, world_height, world_width):
     try:
-        
         white_pixels_pred = np.argwhere(pred >= 0.05)
         lane_coords_x = []
         lane_coords_y = []
@@ -18,12 +24,10 @@ def conv_pred_to_world(world, pred, world_height, world_width):
             lane_coords_x.append(int(x_world))
             lane_coords_y.append(int(y_world))
             cv2.circle(world, (int(x_world),int(y_world)), 2, (0,0,255), 2)
-        
         return lane_coords_x, lane_coords_y
-        
     except:
         pass
-    
+
 def drive_trajectory(world, lane_coords_x, lane_coords_y):
     point = (int(mean(lane_coords_x) + 1.5*(int(mean(lane_coords_x)))), int(mean(lane_coords_y)))
     return point
@@ -44,6 +48,7 @@ def run(model):
         
         lane_coords_x, lane_coords_y = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
         point = drive_trajectory(world, lane_coords_x, lane_coords_y)
+        cv2.imshow("world", world)
 
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
