@@ -6,11 +6,17 @@ import tensorflow as tf
 from statistics import mean
 
 def select_point_lucas_kanade(event, x, y, flags, params):
-    global point, point_selected, old_points
+    global old_points
+    global local_point, point_selected, old_points
     if event == cv2.EVENT_LBUTTONDOWN:
-        point = (x,y)
+        local_point = (x,y)
         point_selected = True
-        old_points = np.array([[x,y]], dtype=np.float32)
+        
+def lucas_kanade_optical_flow(world):
+    global local_point_selected, point
+    if point_selected == True:
+        cv2.circle(world, local_point, 5, (255,0,0), 5)
+    return local_point
 
 def conv_pred_to_world(world, pred, world_height, world_width):
     try:
@@ -29,32 +35,51 @@ def conv_pred_to_world(world, pred, world_height, world_width):
         pass
 
 def drive_trajectory(world, lane_coords_x, lane_coords_y):
-    point = (int(mean(lane_coords_x) + 1.5*(int(mean(lane_coords_x)))), int(mean(lane_coords_y)))
-    return point
+    try:
+        point = (int(mean(lane_coords_x)), int(mean(lane_coords_y)))
+        cv2.circle(world, point, 5, (0,255,0), 5)
+        return point
+    except:
+        pass
     
 def run(model):
-    WORLD_HEIGHT = 1280
-    WORLD_WIDTH = 1024
-    IMG_HEIGHT = 128
-    IMG_WIDTH = 128
-    IMG_CHANNELS = 3
-    X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
-    while True:
-        
-        world = np.array(ImageGrab.grab(bbox=(0,40,WORLD_HEIGHT,WORLD_WIDTH)))       #Window read
-        world_resized = cv2.resize(world, (IMG_HEIGHT, IMG_WIDTH))        
-        X_test[0] = world_resized
-        pred_val = model.predict(X_test)
-        
-        lane_coords_x, lane_coords_y = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
-        point = drive_trajectory(world, lane_coords_x, lane_coords_y)
-        cv2.imshow("world", world)
-
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
-            break
+    try:
+        WORLD_HEIGHT = 1280
+        WORLD_WIDTH = 1024
+        IMG_HEIGHT = 128
+        IMG_WIDTH = 128
+        IMG_CHANNELS = 3
+        X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
+        while True:
+            world = np.array(ImageGrab.grab(bbox=(0,40,WORLD_HEIGHT,WORLD_WIDTH)))
+            local_xy = lucas_kanade_optical_flow(world)
+            
+            world_resized = cv2.resize(world, (IMG_HEIGHT, IMG_WIDTH))        
+            X_test[0] = world_resized
+            pred_val = model.predict(X_test)
+            
+            lane_coords_x, lane_coords_y = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
+            drive_xy = drive_trajectory(world, lane_coords_x, lane_coords_y)
+            
+            if len(local_xy) != 0 and len(drive_xy) != 0:
+                cv2.line(world, local_xy, drive_xy, (0,0,0), 3)
+            
+            cv2.imshow("AI plays GTA 5", world)
+            
+            if cv2.waitKey(25) & 0xFF == ord('q'):
+                cv2.destroyAllWindows()
+                break
+    except:
+        pass
         
 if __name__ == '__main__':
+    #------------------------------------------------------------------------------------ 
+    # Select a local point to localize the player
+    local_point = ()
+    point_selected = False
+    cv2.namedWindow("AI plays GTA 5")
+    cv2.setMouseCallback("AI plays GTA 5", select_point_lucas_kanade)
+    #-----------------------------------------------------------------------------------
     
     model = tf.keras.models.load_model('gta_lane_model.h5')
     run(model)
