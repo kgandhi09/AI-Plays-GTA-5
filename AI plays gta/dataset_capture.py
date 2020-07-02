@@ -15,8 +15,7 @@ while(cap.isOpened()):
         cv2.imwrite('lane_img_' + str(name_count) + '.jpg', frame)
         init_time = curr_time
         name_count += 1
-    # if curr_time - main_time > 10:
-    #     break
+
     i+=1
 
 cap.release()

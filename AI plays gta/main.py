@@ -1,7 +1,7 @@
 from PIL import ImageGrab
 import cv2
 import numpy as np
-from directkeys import PressKey, ReleaseKey, A, D
+from directkeys import PressKey, ReleaseKey,W, A, D
 import tensorflow as tf
 from statistics import mean
 import time
@@ -14,7 +14,7 @@ def select_point_lucas_kanade(event, x, y, flags, params):
             point_selected = True
     except:
         pass
-    
+
 def lucas_kanade_optical_flow(world):
     global local_point_selected, point
     try:
@@ -49,13 +49,21 @@ def drive_trajectory(world, lane_coords_x, lane_coords_y):
         pass
     
 def drive(local_x, drive_x):
-    try:
+    global init_time
+    try:      
+        curr_time = time.time()
+        if curr_time - init_time > 5:
+            PressKey(W)
+            ReleaseKey(W)
+            init_time = curr_time
+        '''
         if local_x > drive_x:
             PressKey(A)
             ReleaseKey(A)         
         elif(local_x < drive_x):
             PressKey(D)
             ReleaseKey(D)
+        '''
     except:
         pass
 
@@ -65,6 +73,7 @@ def run(model):
     IMG_HEIGHT = 128
     IMG_WIDTH = 128
     IMG_CHANNELS = 3
+ 
     X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
     flag = False
    
@@ -80,7 +89,7 @@ def run(model):
         drive_xy = drive_trajectory(world, lane_coords_x, lane_coords_y)
         
         if point_selected and not flag:
-            print("AI will take over in T-5")
+            print("AI will take over in T-5\n")
             time.sleep(5)
             flag = True
             print("Hello I am AI, leave everything up to me now!")
@@ -98,9 +107,11 @@ if __name__ == '__main__':
     # Select a local point to localize the player
     local_point = ()
     point_selected = False
-
+    init_time = time.time()
     cv2.namedWindow("AI plays GTA 5")
     cv2.setMouseCallback("AI plays GTA 5", select_point_lucas_kanade)
+    print("Localize your player by clicking on it\n")
+    
     #-----------------------------------------------------------------------------------
     model = tf.keras.models.load_model('gta_lane_model.h5')
     run(model)
