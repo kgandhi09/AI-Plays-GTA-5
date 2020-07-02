@@ -56,14 +56,12 @@ def drive(local_x, drive_x):
             PressKey(W)
             ReleaseKey(W)
             init_time = curr_time
-        '''
         if local_x > drive_x:
             PressKey(A)
             ReleaseKey(A)         
         elif(local_x < drive_x):
             PressKey(D)
             ReleaseKey(D)
-        '''
     except:
         pass
 
