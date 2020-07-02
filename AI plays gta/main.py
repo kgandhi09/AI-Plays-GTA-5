@@ -59,46 +59,48 @@ def drive(local_x, drive_x):
     except:
         pass
 
-
 def run(model):
-    global point_selected
-    try:
-        WORLD_HEIGHT = 1280
-        WORLD_WIDTH = 1024
-        IMG_HEIGHT = 128
-        IMG_WIDTH = 128
-        IMG_CHANNELS = 3
-        X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
-        while True:
-            world = np.array(ImageGrab.grab(bbox=(0,40,WORLD_HEIGHT,WORLD_WIDTH)))
-            local_xy = lucas_kanade_optical_flow(world)
-            
-            world_resized = cv2.resize(world, (IMG_HEIGHT, IMG_WIDTH))        
-            X_test[0] = world_resized
-            pred_val = model.predict(X_test)
-            
-            lane_coords_x, lane_coords_y = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
-            drive_xy = drive_trajectory(world, lane_coords_x, lane_coords_y)
-            
-            
-            if len(local_xy) != 0 and len(drive_xy) != 0:
-                #cv2.line(world, local_xy, drive_xy, (0,0,0), 3)
-                drive(local_xy[0], drive_xy[0])
-            
-            cv2.imshow("AI plays GTA 5", world)
-            if cv2.waitKey(25) & 0xFF == ord('q'):
-                cv2.destroyAllWindows()
-                break
-    except:
-        pass
+    WORLD_HEIGHT = 1280
+    WORLD_WIDTH = 1024
+    IMG_HEIGHT = 128
+    IMG_WIDTH = 128
+    IMG_CHANNELS = 3
+    X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
+    flag = False
+   
+    while True:
+        world = np.array(ImageGrab.grab(bbox=(0,40,WORLD_HEIGHT,WORLD_WIDTH)))
+        local_xy = lucas_kanade_optical_flow(world)
         
+        world_resized = cv2.resize(world, (IMG_HEIGHT, IMG_WIDTH))        
+        X_test[0] = world_resized
+        pred_val = model.predict(X_test)
+        
+        lane_coords_x, lane_coords_y = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
+        drive_xy = drive_trajectory(world, lane_coords_x, lane_coords_y)
+        
+        if point_selected and not flag:
+            print("AI will take over in T-5")
+            time.sleep(5)
+            flag = True
+            print("Hello I am AI, leave everything up to me now!")
+        
+        if point_selected and flag and ( local_xy != None and drive_xy != None):
+            drive(local_xy[0], drive_xy[0])
+        
+        cv2.imshow("AI plays GTA 5", world)
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
+            break       
+   
 if __name__ == '__main__':
     #------------------------------------------------------------------------------------ 
     # Select a local point to localize the player
     local_point = ()
     point_selected = False
+
+    cv2.namedWindow("AI plays GTA 5")
     cv2.setMouseCallback("AI plays GTA 5", select_point_lucas_kanade)
     #-----------------------------------------------------------------------------------
-    
     model = tf.keras.models.load_model('gta_lane_model.h5')
     run(model)
