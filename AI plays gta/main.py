@@ -59,6 +59,7 @@ def drive(local_x, drive_x):
     except:
         pass
 
+
 def run(model):
     global point_selected
     try:
