@@ -52,8 +52,9 @@ def drive(local_x, drive_x):
     global init_time
     try:      
         curr_time = time.time()
-        if curr_time - init_time > 5:
+        if curr_time - init_time > 1:
             PressKey(W)
+            time.sleep(0.5)
             ReleaseKey(W)
             init_time = curr_time
         if local_x > drive_x:
