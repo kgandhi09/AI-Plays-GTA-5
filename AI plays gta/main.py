@@ -59,9 +59,11 @@ def drive(local_x, drive_x):
             init_time = curr_time
         if local_x > drive_x:
             PressKey(A)
+            time.sleep(0.1)
             ReleaseKey(A)         
         elif(local_x < drive_x):
             PressKey(D)
+            time.sleep(0.1)
             ReleaseKey(D)
     except:
         pass
