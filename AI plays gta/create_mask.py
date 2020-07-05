@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 list_vertices = [[]]
-counter = 2
+counter = 5
 masking_done = False
 masked = []
 vertices_counter = 0              
@@ -31,8 +31,8 @@ def create_mask(event, x, y, flags, params):
             masked = cv2.bitwise_and(img, plane_black_image)
         
         masking_done = True
+        vertices_counter = 0
         list_vertices = [[]]
-
         
 def run():
     global img, masking_done, counter
