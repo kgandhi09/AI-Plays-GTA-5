@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 list_vertices = [[]]
-counter = 5
+counter = 106
 masking_done = False
 masked = []
 vertices_counter = 0              
@@ -24,8 +24,9 @@ def create_mask(event, x, y, flags, params):
         
         if list_vertices != [[]]: 
             for vertices in range(len(list_vertices)):
-                list_vertices[vertices] = np.array(list_vertices[vertices])
-                cv2.fillPoly(mask, [list_vertices[vertices]], (255,255,255))
+                if len(list_vertices[vertices]) != 0: 
+                    list_vertices[vertices] = np.array(list_vertices[vertices])
+                    cv2.fillPoly(mask, [list_vertices[vertices]], (255,255,255))
             masked = cv2.bitwise_and(img, mask)
         else:
             masked = cv2.bitwise_and(img, plane_black_image)
@@ -43,7 +44,7 @@ def run():
         cv2.setMouseCallback("image", create_mask)
         if masking_done == True:
             cv2.imwrite("D:/Deep_Learning/AI plays gta/lane dataset/masked/lane_masked_" + str(counter) + ".jpg", masked)
-            print('mask saved')
+            print(str(round((counter/3197)*100, 2) ) + "% Data created")
             counter += 1
             masking_done = False
         if cv2.waitKey(25) & 0xFF == ord('q'):
