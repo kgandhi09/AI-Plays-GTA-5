@@ -37,19 +37,34 @@ def conv_pred_to_world(world, pred, world_height, world_width):
         return lane_coords_xy
     except:
         pass
-
-def arrang_coords_list_rowwise(world, world_width, lane_coords):
-    pass
     
-def drive_trajectory(world, lane_coords_x, lane_coords_y):
+def drive_trajectory(world, lane_coords_xy):
     try:
-        mean_xy = []
-        point = (int(mean(lane_coords_x)), int(mean(lane_coords_y)))
-        cv2.circle(world, point, 5, (0,255,0), 5)
-        return point
+        counter = 0
+        sorted_coord_list = []
+        sorted_coords_xy = sorted(lane_coords_xy, key = lambda x: x[1])
+        for coord in range(len(sorted_coords_xy)):
+            if coord != len(sorted_coords_xy)-1:
+                if sorted_coords_xy[coord + 1][1] != sorted_coords_xy[coord][1]:
+                    row_coord_list = sorted_coords_xy[counter:coord+1]
+                    counter = coord+1
+                    sorted_coord_list.append(row_coord_list)
+            else:
+                row_coord_list = sorted_coords_xy[counter:]
+                sorted_coord_list.append(row_coord_list)
+        trajectory = []
+        for row_list in sorted_coord_list:
+            sum = 0
+            for i in range(len(row_list)):
+                sum += row_list[i][0]
+            mean_x = sum/len(row_list)
+            point = (int(mean_x), row_list[0][1])
+            cv2.circle(world, point, 4, (0,0,0), 4)
+            trajectory.append(point)
+        return trajectory
     except:
         pass
-    
+
 def drive(local_x, drive_x):
     global init_time
     try:      
@@ -89,8 +104,9 @@ def run(model):
         pred_val = model.predict(X_test)
         
         lane_coords_xy = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
-        print(lane_coords_xy)
-        #drive_trajectory(world, lane_coords_x, lane_coords_y)
+        trajectory = drive_trajectory(world, lane_coords_xy)
+        print(trajectory)
+        print("----sorted-----")
         '''
         if point_selected and not flag:
             print("AI will take over in T-5\n")
@@ -105,8 +121,7 @@ def run(model):
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break       
-        
-    
+
 if __name__ == '__main__':
     #------------------------------------------------------------------------------------ 
     # Select a local point to localize the player
