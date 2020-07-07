@@ -2,12 +2,12 @@ import numpy as np
 import cv2
 
 list_vertices = [[]]
-counter = 106
+counter = 355
 masking_done = False
 masked = []
 vertices_counter = 0              
 
-def create_mask(event, x, y, flags, params): 
+def create_mask(event, x, y, flags, params):
     global counter, masking_done, masked, list_vertices, vertices_counter
     mask = np.zeros_like(img)
     plane_black_image = np.zeros(img.shape, np.uint8)

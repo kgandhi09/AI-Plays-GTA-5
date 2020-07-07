@@ -5,7 +5,7 @@ from tqdm import tqdm
 from skimage.io import imread, imshow
 from skimage.transform import resize
 
-TRAIN_PATH = 'D:/Deep_Learning/AI plays gta/lane dataset/train_temp'
+TRAIN_PATH = 'D:/Deep_Learning/AI plays gta/lane dataset/train'
 
 train_list = os.listdir(TRAIN_PATH)
 
@@ -17,15 +17,15 @@ X_train = np.zeros((len(train_list), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype
 Y_train = np.zeros((len(train_list), IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.bool)
 
 for n in tqdm(range(1,len(train_list))):
-    img = imread("D:/Deep_Learning/AI plays gta/lane dataset/train_temp/lane_img_" + str(n) + ".jpg")
+    img = imread("D:/Deep_Learning/AI plays gta/lane dataset/train/lane_img_" + str(n) + ".jpg")
     img = resize(img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
     X_train[n] = img
     mask = imread("D:/Deep_Learning/AI plays gta/lane dataset/masked/lane_masked_" + str(n) + ".jpg")
     mask = resize(mask, (IMG_HEIGHT, IMG_WIDTH, 1), mode='constant', preserve_range=True)
     Y_train[n] = mask    
     
-imshow(np.squeeze(X_train[490]))
-imshow(np.squeeze(Y_train[490]))
+imshow(np.squeeze(X_train[1]))
+imshow(np.squeeze(Y_train[1]))
 
 # Building the model
 inputs = tf.keras.layers.Input((IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS))
@@ -87,19 +87,21 @@ model = tf.keras.Model(inputs=[inputs], outputs=[outputs])
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 model.summary()
 
-results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=30, epochs=1000)
-model.save('gta_lane_model.h5')
-model.save_weights('gta_lane_model_weights.h5')
+results = model.fit(X_train, Y_train, validation_split=0.1, epochs=1000)
+model.save('gta_lane_model_v2.h5')
+model.save_weights('gta_lane_model_weights_v2.h5')
 0
-counter = 28563
+
+counter = 1316
 
 X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
 
+
 #Testing the model
-test_img = imread("D:/Deep_Learning/AI plays gta/lane dataset/train/lane_img_" + str(counter) + ".jpg")
+test_img = imread("D:/Deep_Learning/AI plays gta/lane dataset/raw/lane_img_" + str(counter) + ".jpg")
 test_img = resize(test_img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
 X_test[0] = test_img
 imshow(np.squeeze(X_test[0]))
 pred_val = model.predict(X_test, verbose=1)
 imshow(np.squeeze(pred_val[0]))
-
+'''

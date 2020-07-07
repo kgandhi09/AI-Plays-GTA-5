@@ -27,21 +27,23 @@ def lucas_kanade_optical_flow(world):
 def conv_pred_to_world(world, pred, world_height, world_width):
     try:
         white_pixels_pred = np.argwhere(pred >= 0.05)
-        lane_coords_x = []
-        lane_coords_y = []
+        lane_coords_xy = []
         # (x,y) of pred world are : (white_pixels_pred[pixel][1],white_pixels_pred[pixel][0])
         for pixel in range(len(white_pixels_pred)):
             x_world = (white_pixels_pred[pixel][1]*world_height)/128
             y_world = (white_pixels_pred[pixel][0]*world_width)/128
-            lane_coords_x.append(int(x_world))
-            lane_coords_y.append(int(y_world))
+            lane_coords_xy.append((int(x_world), int(y_world)))
             cv2.circle(world, (int(x_world),int(y_world)), 2, (0,0,255), 2)
-        return lane_coords_x, lane_coords_y
+        return lane_coords_xy
     except:
         pass
 
+def arrang_coords_list_rowwise(world, world_width, lane_coords):
+    pass
+    
 def drive_trajectory(world, lane_coords_x, lane_coords_y):
     try:
+        mean_xy = []
         point = (int(mean(lane_coords_x)), int(mean(lane_coords_y)))
         cv2.circle(world, point, 5, (0,255,0), 5)
         return point
@@ -86,23 +88,25 @@ def run(model):
         X_test[0] = world_resized
         pred_val = model.predict(X_test)
         
-        lane_coords_x, lane_coords_y = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
-        drive_xy = drive_trajectory(world, lane_coords_x, lane_coords_y)
-        
+        lane_coords_xy = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
+        print(lane_coords_xy)
+        #drive_trajectory(world, lane_coords_x, lane_coords_y)
+        '''
         if point_selected and not flag:
             print("AI will take over in T-5\n")
             time.sleep(5)
             flag = True
             print("Hello I am AI, leave everything up to me now!")
         
-        if point_selected and flag and ( local_xy != None and drive_xy != None):
             drive(local_xy[0], drive_xy[0])
-        
+            pass
+        '''
         cv2.imshow("AI plays GTA 5", world)
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break       
-   
+        
+    
 if __name__ == '__main__':
     #------------------------------------------------------------------------------------ 
     # Select a local point to localize the player
@@ -114,5 +118,5 @@ if __name__ == '__main__':
     print("Localize your player by clicking on it\n")
     
     #-----------------------------------------------------------------------------------
-    model = tf.keras.models.load_model('gta_lane_model.h5')
+    model = tf.keras.models.load_model('gta_lane_model_v2.h5')
     run(model)
