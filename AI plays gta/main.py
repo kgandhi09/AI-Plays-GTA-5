@@ -39,31 +39,32 @@ def conv_pred_to_world(world, pred, world_height, world_width):
         pass
     
 def drive_trajectory(world, lane_coords_xy):
-    try:
-        counter = 0
-        sorted_coord_list = []
-        sorted_coords_xy = sorted(lane_coords_xy, key = lambda x: x[1])
-        for coord in range(len(sorted_coords_xy)):
-            if coord != len(sorted_coords_xy)-1:
-                if sorted_coords_xy[coord + 1][1] != sorted_coords_xy[coord][1]:
-                    row_coord_list = sorted_coords_xy[counter:coord+1]
-                    counter = coord+1
-                    sorted_coord_list.append(row_coord_list)
-            else:
-                row_coord_list = sorted_coords_xy[counter:]
+    counter = 0
+    sorted_coord_list = []
+    sorted_coords_xy = sorted(lane_coords_xy, key = lambda x: x[1])
+    for coord in range(len(sorted_coords_xy)):
+        if coord != len(sorted_coords_xy)-1:
+            if sorted_coords_xy[coord + 1][1] != sorted_coords_xy[coord][1]:
+                row_coord_list = sorted_coords_xy[counter:coord+1]
+                counter = coord+1
                 sorted_coord_list.append(row_coord_list)
-        trajectory = []
-        for row_list in sorted_coord_list:
-            sum = 0
-            for i in range(len(row_list)):
-                sum += row_list[i][0]
-            mean_x = sum/len(row_list)
-            point = (int(mean_x), row_list[0][1])
-            cv2.circle(world, point, 4, (0,0,0), 4)
-            trajectory.append(point)
-        return trajectory
-    except:
-        pass
+        else:
+            row_coord_list = sorted_coords_xy[counter:]
+            sorted_coord_list.append(row_coord_list)
+    trajectory = []
+    for row_list in sorted_coord_list:
+        sum = 0
+        for i in range(len(row_list)):
+            sum += row_list[i][0]
+        mean_x = sum/len(row_list)
+        point = (int(mean_x), row_list[0][1])
+        trajectory.append(point)
+    for point in range(len(trajectory)):
+        cv2.circle(world, trajectory[point], 4, (0,0,0), 4)
+        if point != 0:
+            cv2.line(world, trajectory[point-1], trajectory[point], (0,255,0), 2)
+    return trajectory
+    
 '''
 def kalman_filter(data):
     upd_x = [0]
@@ -126,9 +127,7 @@ def run(model):
         
         lane_coords_xy = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
         trajectory = drive_trajectory(world, lane_coords_xy)
-        filtered_trajectory = kalman_filter(trajectory)
-        print(trajectory)
-        print("----sorted-----")
+        #filtered_trajectory = kalman_filter(trajectory)
         '''
         if point_selected and not flag:
             print("AI will take over in T-5\n")
