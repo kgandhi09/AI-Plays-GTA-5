@@ -64,7 +64,28 @@ def drive_trajectory(world, lane_coords_xy):
         return trajectory
     except:
         pass
+'''
+def kalman_filter(data):
+    upd_x = [0]
+    state_estimate = [0]
+    P = [0]
+    upd_P = [0]
+    Q = R = 0.1
+    K = [0]
+    t = [0]
 
+    k = 0
+    while k < 201:
+        if k > 0: 
+            upd_x.append(state_estimate[k-1])
+            upd_P.append(P[k-1] + Q)
+            K.append(upd_P[k]/(upd_P[k] + R))
+            state_estimate.append(upd_x[k] + (K[k] * (data[k] - upd_x[k])))
+            P.append( (1 - K[k]) * upd_P[k])
+            t.append(0.025*k)   
+        k = k + 1
+    return t
+'''
 def drive(local_x, drive_x):
     global init_time
     try:      
@@ -105,6 +126,7 @@ def run(model):
         
         lane_coords_xy = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
         trajectory = drive_trajectory(world, lane_coords_xy)
+        filtered_trajectory = kalman_filter(trajectory)
         print(trajectory)
         print("----sorted-----")
         '''
