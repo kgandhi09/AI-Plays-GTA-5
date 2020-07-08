@@ -37,14 +37,14 @@ def conv_pred_to_world(world, pred, world_height, world_width):
         return lane_coords_xy
     except:
         pass
-    
+
 def drive_trajectory(world, lane_coords_xy):
     counter = 0
     sorted_coord_list = []
     sorted_coords_xy = sorted(lane_coords_xy, key = lambda x: x[1])
     for coord in range(len(sorted_coords_xy)):
         if coord != len(sorted_coords_xy)-1:
-            if sorted_coords_xy[coord + 1][1] != sorted_coords_xy[coord][1]:
+            if sorted_coords_xy[coord+1][1] != sorted_coords_xy[coord][1]:
                 row_coord_list = sorted_coords_xy[counter:coord+1]
                 counter = coord+1
                 sorted_coord_list.append(row_coord_list)
@@ -64,7 +64,7 @@ def drive_trajectory(world, lane_coords_xy):
         if point != 0:
             cv2.line(world, trajectory[point-1], trajectory[point], (0,255,0), 2)
     return trajectory
-    
+
 '''
 def kalman_filter(data):
     upd_x = [0]
