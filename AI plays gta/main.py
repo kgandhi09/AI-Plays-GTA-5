@@ -26,7 +26,7 @@ def lucas_kanade_optical_flow(world):
 
 def conv_pred_to_world(world, pred, world_height, world_width):
     try:
-        white_pixels_pred = np.argwhere(pred >= 0.05)
+        white_pixels_pred = np.argwhere(pred >= 0.75)
         lane_coords_xy = []
         # (x,y) of pred world are : (white_pixels_pred[pixel][1],white_pixels_pred[pixel][0])
         for pixel in range(len(white_pixels_pred)):
@@ -39,71 +39,55 @@ def conv_pred_to_world(world, pred, world_height, world_width):
         pass
 
 def drive_trajectory(world, lane_coords_xy):
-    counter = 0
-    sorted_coord_list = []
-    sorted_coords_xy = sorted(lane_coords_xy, key = lambda x: x[1])
-    for coord in range(len(sorted_coords_xy)):
-        if coord != len(sorted_coords_xy)-1:
-            if sorted_coords_xy[coord+1][1] != sorted_coords_xy[coord][1]:
-                row_coord_list = sorted_coords_xy[counter:coord+1]
-                counter = coord+1
+    try:
+        counter = 0
+        sorted_coord_list = []
+        sorted_coords_xy = sorted(lane_coords_xy, key = lambda x: x[1])
+        for coord in range(len(sorted_coords_xy)):
+            if coord != len(sorted_coords_xy)-1:
+                if sorted_coords_xy[coord+1][1] != sorted_coords_xy[coord][1]:
+                    row_coord_list = sorted_coords_xy[counter:coord+1]
+                    counter = coord+1
+                    sorted_coord_list.append(row_coord_list)
+            else:
+                row_coord_list = sorted_coords_xy[counter:]
                 sorted_coord_list.append(row_coord_list)
-        else:
-            row_coord_list = sorted_coords_xy[counter:]
-            sorted_coord_list.append(row_coord_list)
-    trajectory = []
-    for row_list in sorted_coord_list:
-        for coord in range(len(row_list)):
+        trajectory = []
+        for row_list in sorted_coord_list:
+            for coord in range(len(row_list)):
+                if coord != 0:
+                    if row_list[coord][0] - row_list[coord-1][0] > 200:
+                        mean_x = (row_list[coord][0] + row_list[coord-1][0])/2
+                        point = (int(mean_x), row_list[0][1])
+                        trajectory.append(point)
+        temp = []
+        for coord in range(len(trajectory)):
             if coord != 0:
-                if row_list[coord][0] - row_list[coord-1][0] > 100:
-                    mean_x = (row_list[coord][0] + row_list[coord-1][0])/2
-                    point = (int(mean_x), row_list[0][1])
-                    trajectory.append(point)
-    for point in range(len(trajectory)):
-        cv2.circle(world, trajectory[point], 4, (0,0,0), 4)
-        if point != 0:
-            cv2.line(world, trajectory[point-1], trajectory[point], (0,255,0), 2)
-    return trajectory
+                if abs(trajectory[coord][0] - trajectory[coord-1][0]) > 75:
+                    temp.append(trajectory[coord-1])
+        for coord in temp:
+            if coord in trajectory:
+                trajectory.remove(coord)
+        for point in range(len(trajectory)):
+            cv2.circle(world, trajectory[point], 4, (0,0,0), 4)
+            if point != 0:
+                cv2.line(world, trajectory[point-1], trajectory[point], (0,255,0), 2)
+        return trajectory
+    except:
+        pass
 
-'''
-def kalman_filter(data):
-    upd_x = [0]
-    state_estimate = [0]
-    P = [0]
-    upd_P = [0]
-    Q = R = 0.1
-    K = [0]
-    t = [0]
-
-    k = 0
-    while k < 201:
-        if k > 0: 
-            upd_x.append(state_estimate[k-1])
-            upd_P.append(P[k-1] + Q)
-            K.append(upd_P[k]/(upd_P[k] + R))
-            state_estimate.append(upd_x[k] + (K[k] * (data[k] - upd_x[k])))
-            P.append( (1 - K[k]) * upd_P[k])
-            t.append(0.025*k)   
-        k = k + 1
-    return t
-'''
-def drive(local_x, drive_x):
+def drive(local_xy, trajectory):
     global init_time
+    local_x = local_xy[0]
+    local_y = local_xy[1]
+    tolerance = 30
     try:      
-        curr_time = time.time()
-        if curr_time - init_time > 1:
+        if local_y > trajectory[0][1] + tolerance:
             PressKey(W)
-            time.sleep(0.5)
+            time.sleep(0.4)
             ReleaseKey(W)
-            init_time = curr_time
-        if local_x > drive_x:
-            PressKey(A)
-            time.sleep(0.1)
-            ReleaseKey(A)         
-        elif(local_x < drive_x):
-            PressKey(D)
-            time.sleep(0.1)
-            ReleaseKey(D)
+        if local_y <= trajectory[0][1] + tolerance:
+            pass
     except:
         pass
 
@@ -115,9 +99,10 @@ def run(model):
     IMG_CHANNELS = 3
  
     X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
-    flag = False
-   
-    while True:
+    init_flag = False
+    drive_flag = False
+    
+    while True:    
         world = np.array(ImageGrab.grab(bbox=(0,40,WORLD_HEIGHT,WORLD_WIDTH)))
         local_xy = lucas_kanade_optical_flow(world)
         
@@ -127,17 +112,14 @@ def run(model):
         
         lane_coords_xy = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
         trajectory = drive_trajectory(world, lane_coords_xy)
-        #filtered_trajectory = kalman_filter(trajectory)
-        '''
-        if point_selected and not flag:
+        
+        if point_selected and not init_flag:
             print("AI will take over in T-5\n")
             time.sleep(5)
-            flag = True
+            init_flag = True
             print("Hello I am AI, leave everything up to me now!")
+            drive(local_xy, trajectory)
         
-            drive(local_xy[0], drive_xy[0])
-            pass
-        '''
         cv2.imshow("AI plays GTA 5", world)
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
