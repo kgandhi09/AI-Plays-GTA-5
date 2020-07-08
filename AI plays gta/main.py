@@ -53,12 +53,12 @@ def drive_trajectory(world, lane_coords_xy):
             sorted_coord_list.append(row_coord_list)
     trajectory = []
     for row_list in sorted_coord_list:
-        sum = 0
-        for i in range(len(row_list)):
-            sum += row_list[i][0]
-        mean_x = sum/len(row_list)
-        point = (int(mean_x), row_list[0][1])
-        trajectory.append(point)
+        for coord in range(len(row_list)):
+            if coord != 0:
+                if row_list[coord][0] - row_list[coord-1][0] > 100:
+                    mean_x = (row_list[coord][0] + row_list[coord-1][0])/2
+                    point = (int(mean_x), row_list[0][1])
+                    trajectory.append(point)
     for point in range(len(trajectory)):
         cv2.circle(world, trajectory[point], 4, (0,0,0), 4)
         if point != 0:
