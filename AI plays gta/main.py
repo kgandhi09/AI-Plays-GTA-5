@@ -72,22 +72,24 @@ def drive_trajectory(world, lane_coords_xy):
             cv2.circle(world, trajectory[point], 4, (0,0,0), 4)
             if point != 0:
                 cv2.line(world, trajectory[point-1], trajectory[point], (0,255,0), 2)
-        return trajectory
+        return True, trajectory 
     except:
         pass
 
-def drive(local_xy, trajectory):
-    global init_time
+def drive(world, local_xy, trajectory):
     local_x = local_xy[0]
     local_y = local_xy[1]
     tolerance = 30
-    try:      
+    drive_flag = True
+    try:   
+        print(drive_flag)
         if local_y > trajectory[0][1] + tolerance:
-            PressKey(W)
+            drive_flag = True
             time.sleep(0.4)
-            ReleaseKey(W)
         if local_y <= trajectory[0][1] + tolerance:
-            pass
+            print('next iter')
+            drive_flag = False
+        return drive_flag
     except:
         pass
 
@@ -99,26 +101,29 @@ def run(model):
     IMG_CHANNELS = 3
  
     X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
-    init_flag = False
+    init_flag = True
     drive_flag = False
     
-    while True:    
-        world = np.array(ImageGrab.grab(bbox=(0,40,WORLD_HEIGHT,WORLD_WIDTH)))
-        local_xy = lucas_kanade_optical_flow(world)
-        
-        world_resized = cv2.resize(world, (IMG_HEIGHT, IMG_WIDTH))        
-        X_test[0] = world_resized
-        pred_val = model.predict(X_test)
-        
-        lane_coords_xy = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
-        trajectory = drive_trajectory(world, lane_coords_xy)
-        
-        if point_selected and not init_flag:
-            print("AI will take over in T-5\n")
-            time.sleep(5)
-            init_flag = True
-            print("Hello I am AI, leave everything up to me now!")
-            drive(local_xy, trajectory)
+    while True:  
+        if not drive_flag:
+            world = np.array(ImageGrab.grab(bbox=(0,40,WORLD_HEIGHT,WORLD_WIDTH)))
+            local_xy = lucas_kanade_optical_flow(world)
+            
+            world_resized = cv2.resize(world, (IMG_HEIGHT, IMG_WIDTH))        
+            X_test[0] = world_resized
+            pred_val = model.predict(X_test)        
+            lane_coords_xy = conv_pred_to_world(world, pred_val[0], WORLD_HEIGHT, WORLD_WIDTH)
+            if point_selected and init_flag:
+                print("AI will take over in T-5\n")
+                time.sleep(5)
+                init_flag = False
+                print("Hello I am AI, leave everything up to me now!")
+            if point_selected:    
+                traj_generated, trajectory = drive_trajectory(world, lane_coords_xy)
+                drive_flag = True
+        if drive_flag:
+            reached = drive(world, local_xy, trajectory)
+            drive_flag = reached
         
         cv2.imshow("AI plays GTA 5", world)
         if cv2.waitKey(25) & 0xFF == ord('q'):
