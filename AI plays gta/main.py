@@ -126,7 +126,7 @@ def run(model):
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break       
-
+ 
 if __name__ == '__main__':
     #------------------------------------------------------------------------------------ 
     # Select a local point to localize the player
