@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 from directkeys import PressKey, ReleaseKey,W, A, D
 import tensorflow as tf
-from statistics import mean
 import time
 
 def select_point_lucas_kanade(event, x, y, flags, params):
@@ -80,14 +79,20 @@ def drive(world, local_xy, trajectory):
     local_x = local_xy[0]
     local_y = local_xy[1]
     tolerance = 30
-    drive_flag = True
     try:   
-        print(drive_flag, local_y, trajectory[0][1] + tolerance)
         if local_y > trajectory[0][1] + tolerance:
             PressKey(W)
-            time.sleep(0.4)
+            time.sleep(0.8)
             ReleaseKey(W)
-
+            if local_x > trajectory[0][0]:
+                PressKey(A)
+                time.sleep(0.1)
+                ReleaseKey(A)         
+            elif local_x < trajectory[0][0]:
+                PressKey(D)
+                time.sleep(0.3)
+                ReleaseKey(D)
+            
     except:
         pass
 
@@ -133,5 +138,5 @@ if __name__ == '__main__':
     print("Localize your player by clicking on it\n")
     
     #-----------------------------------------------------------------------------------
-    model = tf.keras.models.load_model('gta_lane_model_v2.h5')
+    model = tf.keras.models.load_model('gta_lane_model.h5')
     run(model)
