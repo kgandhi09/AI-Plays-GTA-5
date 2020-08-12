@@ -1,5 +1,3 @@
-#Recurrent Neural Network
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -13,7 +11,7 @@ import keras
 
 #Part 1: Data Preprocessing
 #Importing the dataset
-dataset_train = pd.read_csv('D:\Deep_Learning\stock_price_prediction_LSTM\Google_Stock_Price_Train.csv')
+dataset_train = pd.read_csv('/home/kgandhi/Desktop/Deep_Learning/stock_price_prediction_LSTM/Google_Stock_Price_Train.csv')
 training_set = dataset_train.iloc[:,1:2].values
 
 #Feature Scaling
@@ -60,11 +58,11 @@ regressor.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
 #Fitting the RNN to the Training set
 regressor.fit(X_train, Y_train, epochs = 100, batch_size = 32)
-regressor.save('D:\Deep_Learning\stock_price_prediction_LSTM\stock_prediction_rnn.h5')
+regressor.save('/home/kgandhi/Desktop/Deep_Learning/stock_price_prediction_LSTM/stock_prediction_rnn.h5')
 #Making the predictions and visualizing the results
 
 #Getting the real stock price of google
-dataset_test = pd.read_csv('D:\Deep_Learning\stock_price_prediction_LSTM\Google_Stock_Price_Test.csv')
+dataset_test = pd.read_csv('/home/kgandhi/Desktop/Deep_Learning/stock_price_prediction_LSTM/Google_Stock_Price_Test.csv')
 real_stock_price = dataset_test.iloc[:, 1:2].values
 
 #Getting the predicted stock price
