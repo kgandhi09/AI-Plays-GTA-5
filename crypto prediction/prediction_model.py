@@ -4,6 +4,11 @@ from sklearn import preprocessing
 from collections import deque
 import numpy as np
 import random
+import time
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dropout, Dense, LSTM, BatchNormalization
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 
 main_df = pd.DataFrame()
 ratios = ["BTC-USD", "LTC-USD", "ETH-USD", "BCH-USD"] 
@@ -11,6 +16,9 @@ ratios = ["BTC-USD", "LTC-USD", "ETH-USD", "BCH-USD"]
 SEQ_LEN = 60
 FUTURE_PERIOD_PREDICT = 3
 RATIO_TO_PREDICT = "LTC-USD"
+EPOCHS = 10
+BATCH_SIZE = 64
+NAME = f"{SEQ_LEN}-SEQ-{FUTURE_PERIOD_PREDICT}-PRED-{int(time.time())}"
 
 def classify(current, future):
     if float(future) > float(current):
@@ -66,7 +74,7 @@ def preprocess_df(df):
         X.append(seq)
         Y.append(target)
       
-    return np.array(X), Y
+    return np.array(X), np.array(Y)
     
 for ratio in ratios:
     dataset = f"/home/kgandhi/Desktop/Deep_Learning/crypto prediction/crypto_data/{ratio}.csv"
@@ -93,5 +101,46 @@ train_x, train_y = preprocess_df(main_df)
 validation_x, validation_y = preprocess_df(validation_main_df)  
 
 print(f"train data: {len(train_x)} validation: {len(validation_x)}")
-print(f"Train dont buys: {train_y.count(0)} Train buys: {train_y.count(1)}")
-print(f"Valid dont buys: {validation_y.count(0)} Valid buys: {validation_y.count(1)}")
+# print(f"Train dont buys: {train_y.count(0)} Train buys: {train_y.count(1)}")
+# print(f"Valid dont buys: {validation_y.count(0)} Valid buys: {validation_y.count(1)}")
+
+model = Sequential()
+
+model.add(LSTM(128, input_shape=(train_x.shape[1:]), return_sequences=True))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
+
+model.add(LSTM(128, input_shape=(train_x.shape[1:]), return_sequences=True))
+model.add(Dropout(0.1))
+model.add(BatchNormalization())
+
+model.add(LSTM(128, input_shape=(train_x.shape[1:])))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
+
+model.add(Dense(32, activation="relu"))
+model.add(Dropout(0.2))
+
+model.add(Dense(2, activation="softmax"))
+
+opt = tf.keras.optimizers.Adam(lr=0.001, decay=1e-6)
+
+model.compile(loss='sparse_categorical_crossentropy',
+              optimizer=opt,
+              metrics=['accuracy'])
+
+tensorboard = TensorBoard(log_dir=f'logs/{NAME}')
+
+filepath = "RNN_Final-{epoch:02d}"
+checkpoint = ModelCheckpoint("models/{}.model".format(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max'))
+
+history = model.fit(train_x,
+                    train_y,
+                    batch_size=BATCH_SIZE,
+                    epochs=EPOCHS,
+                    validation_data=(validation_x, validation_y),
+                    callbacks=[tensorboard, checkpoint])
+
+model.save("crypto_prediction.h5")
+
+
